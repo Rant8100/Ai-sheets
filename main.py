@@ -275,5 +275,20 @@ if __name__ == '__main__':
     application.add_handler(CommandHandler("start", start))
     application.add_handler(conv_handler)
     
-    print("Bot is running...")
-    application.run_polling()
+    # --- ЗАПУСК ДЛЯ CLOUD RUN ---
+    PORT = os.environ.get("PORT")
+    WEBHOOK_URL = os.environ.get("WEBHOOK_URL") 
+
+    if PORT and WEBHOOK_URL:
+        # Если есть PORT и URL (в облаке)
+        print(f"🚀 Starting Webhook on port {PORT}...")
+        application.run_webhook(
+            listen="0.0.0.0",
+            port=int(PORT),
+            url_path=TELEGRAM_TOKEN,
+            webhook_url=f"{WEBHOOK_URL}/{TELEGRAM_TOKEN}"
+        )
+    else:
+        # Если нет (локально)
+        print("🐢 Starting Polling (Local Mode)...")
+        application.run_polling()
