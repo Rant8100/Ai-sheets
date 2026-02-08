@@ -1,0 +1,15 @@
+steps:
+  # Этот шаг делает то же самое, что и ваша обычная сборка через Dockerfile
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/finbot-v3', '.']
+  
+  # Этот шаг отправляет образ в реестр (аналог docker push)
+  - name: 'gcr.io/cloud-builders/docker'
+    args: ['push', 'gcr.io/$PROJECT_ID/finbot-v3']
+
+# ВАЖНО: Укажите здесь тот самый сервисный аккаунт, который вы хотели использовать
+serviceAccount: 'projects/ВАШ_PROJECT_ID/serviceAccounts/ВАШ_EMAIL_СЕРВИСНОГО_АККАУНТА'
+
+# ВОТ РЕШЕНИЕ ВАШЕЙ ОШИБКИ:
+options:
+  logging: CLOUD_LOGGING_ONLY
