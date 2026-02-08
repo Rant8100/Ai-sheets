@@ -1,17 +1,19 @@
 steps:
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['build', '-t', 'gcr.io/$PROJECT_ID/tg-webhook', '.']
+    args: ['build', '-t', 'gcr.io/$PROJECT_ID/github-finbot', '.']
   - name: 'gcr.io/cloud-builders/docker'
-    args: ['push', 'gcr.io/$PROJECT_ID/tg-webhook']
+    args: ['push', 'gcr.io/$PROJECT_ID/github-finbot']
   - name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: gcloud
     args:
-    - 'run'
-    - 'deploy'
-    - 'tg-webhook'
-    - '--image'
-    - 'gcr.io/$PROJECT_ID/tg-webhook'
-    - '--region'
-    - 'us-west2'
+      - 'run'
+      - 'deploy'
+      - 'finbot-service'
+      - '--image'
+      - 'gcr.io/$PROJECT_ID/github-finbot'
+      - '--region'
+      - 'us-central1'
+      - '--platform'
+      - 'managed'
 options:
   logging: CLOUD_LOGGING_ONLY
