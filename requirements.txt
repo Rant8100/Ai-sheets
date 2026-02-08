@@ -1,7 +1,10 @@
-python-telegram-bot==21.10
-openai==1.50.0
-gspread==6.1.4
-google-auth==2.35.0
-pdfplumber==0.11.4
-python-dotenv==1.0.1
-pydub==0.25.1
+python-telegram-bot==20.8
+openai==1.12.0
+httpx==0.27.0
+python-dotenv
+gspread
+google-auth
+google-auth-oauthlib
+pdfplumber
+Pillow
+pydub
