@@ -69,9 +69,9 @@ async def process_input(update: Update, context: ContextTypes.DEFAULT_TYPE):
 
             await status_msg.edit_text(f"🗣 Распознано: {text_content}\n🧠 Думаю...")
 
-        # Запускаем анализ сразу как General
-        await run_ai_analysis(update, context, status_msg, text=text_content, doc_type="general")
-        return ConversationHandler.END
+        # --- ВАЖНОЕ ИСПРАВЛЕНИЕ ЗДЕСЬ ---
+        # Мы возвращаем результат анализа (WAITING_FOR_DATE или END), а не завершаем принудительно.
+        return await run_ai_analysis(update, context, status_msg, text=text_content, doc_type="general")
 
     # --- СЦЕНАРИЙ 2: ФАЙЛЫ (PDF / ФОТО) ---
     # Нужно спросить тип документа
@@ -175,13 +175,14 @@ async def run_ai_analysis(update, context, status_msg, text=None, image_bytes=No
         # 3. Проверяем Дату
         if not result.get("date"):
             # Если даты нет, просим ввести
-            ask_text = f"💰 Нашел {count_items} поз. на ${total_amount:.2f}.\n📅 Даты нет в документе. Введи дату (MM.DD):"
+            ask_text = f"💰 Нашел {count_items} поз. на ${total_amount:.2f}.\n📅 Даты нет в документе (или я тупой). Введи дату (MM.DD):"
             
             if is_callback: await effective_message.reply_text(ask_text)
             else: 
                 await status_msg.delete()
                 await effective_message.reply_text(ask_text)
-                
+            
+            # ВОЗВРАЩАЕМ СТАТУС ОЖИДАНИЯ
             return WAITING_FOR_DATE
         
         # 4. Если дата есть — сохраняем
@@ -197,6 +198,7 @@ async def run_ai_analysis(update, context, status_msg, text=None, image_bytes=No
 async def ask_date_handler(update: Update, context: ContextTypes.DEFAULT_TYPE):
     """Если юзер вводит дату вручную"""
     date_text = update.message.text
+    # Пытаемся распарсить дату через наш сервис
     parsed_date = parse_date(date_text)
     date_str = parsed_date.strftime("%m.%d.%Y")
     
