@@ -119,7 +119,7 @@ async def analyze_content(text: str = None, image_bytes: bytes = None, doc_type:
     
     try:
         response = await client.chat.completions.create(
-            model="gpt-4o-mini",
+            model="gpt-4o",
             messages=messages,
             response_format={"type": "json_object"},
             temperature=0.1
